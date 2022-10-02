@@ -86,7 +86,7 @@ function App() {
     api
       .deleteCard(card._id)
       .then(() => {
-        setCards(cards.filter((item) => item !== card));
+        setCards((state) => state.filter((item) => item._id !== card._id));
       })
       .then(() => {
         closeAllPopups();
@@ -161,12 +161,6 @@ function App() {
     }
   }
 
-  function handleEscClose(evt) {
-    if (evt.key === "Escape") {
-      closeAllPopups();
-    }
-  }
-
   function closeAllPopups() {
     setIsEditProfilePopupOpen(false);
     setIsAddPlacePopupOpen(false);
@@ -176,6 +170,22 @@ function App() {
     setIsInfoTooltipPopupOpen(false);
     setSelectedCard({ name: "", link: "" });
   }
+
+  const isOpen = isEditAvatarPopupOpen || isEditProfilePopupOpen || isAddPlacePopupOpen || isFullscreenPopupOpen
+
+  React.useEffect(() => {
+    function closeByEscape(evt) {
+      if (evt.key === 'Escape') {
+        closeAllPopups();
+      }
+    }
+    if (isOpen) {
+      document.addEventListener('keydown', closeByEscape);
+      return () => {
+        document.removeEventListener('keydown', closeByEscape);
+      }
+    }
+  }, [isOpen])
 
   React.useEffect(() => {
     api
@@ -196,12 +206,13 @@ function App() {
       })
       .then(() => {
         setIsRegistrationAccepted(true);
-        handleRegistrationResult();
       })
       .catch((err) => {
         console.log(err);
-        handleRegistrationResult();
         setIsRegistrationAccepted(false);
+      })
+      .finally(() => {
+        handleRegistrationResult();
       })
   }
 
@@ -282,7 +293,6 @@ function App() {
         isOpen={isEditProfilePopupOpen}
         onClose={closeAllPopups}
         onUpdateUser={handleUpdateUser}
-        onEscClick={handleEscClose}
         onOverlayClick={onOverlayClick}
         renderLoading={renderLoading}
       />
@@ -290,7 +300,6 @@ function App() {
         isOpen={isAddPlacePopupOpen}
         onClose={closeAllPopups}
         onAddPlace={handleAddPlaceSubmit}
-        onEscClick={handleEscClose}
         onOverlayClick={onOverlayClick}
         renderLoading={renderLoading}
       />
@@ -298,7 +307,6 @@ function App() {
         isOpen={isEditAvatarPopupOpen}
         onClose={closeAllPopups}
         onUpdateAvatar={handleUpdateAvatar}
-        onEscClick={handleEscClose}
         onOverlayClick={onOverlayClick}
         renderLoading={renderLoading}
       />
@@ -307,21 +315,18 @@ function App() {
         onClose={closeAllPopups}
         card={removableCard}
         onConfirm={handleCardDelete}
-        onEscClick={handleEscClose}
         onOverlayClick={onOverlayClick}
       />
       <ImagePopup
         card={selectedCard}
         isOpen={isFullscreenPopupOpen}
         onClose={closeAllPopups}
-        onEscClick={handleEscClose}
         onOverlayClick={onOverlayClick}
       />
       <InfoTooltip
         isRegister={isRegistrationAccepted}
         isOpen={isInfoTooltipPopupOpen}
         onClose={closeAllPopups}
-        onEscClick={handleEscClose}
         onOverlayClick={onOverlayClick}
       />
       <Footer />

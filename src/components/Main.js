@@ -23,14 +23,14 @@ function Main(props) {
             className="profile__edit-btn btn-decoration"
             type="button"
             onClick={props.onEditProfile}
-          ></button>
+          />
           <p className="profile__description">{currentUser.about}</p>
         </div>
         <button
           className="profile__add-btn btn-decoration"
           type="button"
           onClick={props.onAddPlace}
-        ></button>
+        />
       </section>
 
       <section className="cards">

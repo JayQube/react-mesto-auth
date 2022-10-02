@@ -35,6 +35,7 @@ function Register(props) {
           className="form__item form__item_theme_dark"
           required
           onChange={handleEmailChange}
+          value={email || ""}
         />
         <span className="form__error title-error"></span>
         <input
@@ -45,6 +46,7 @@ function Register(props) {
           className="form__item form__item_theme_dark"
           required
           onChange={handlePasswordChange}
+          value={password || ""}
         />
         <span className="form__error title-error"></span>
         <button
